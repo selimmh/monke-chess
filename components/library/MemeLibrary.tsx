@@ -159,11 +159,12 @@ export function MemeLibrary() {
           {memes.map((meme) => (
             <Card key={meme.id} className="overflow-hidden">
               <div className="aspect-square bg-muted relative">
-                {meme.thumbnailUrl ? (
-                  <img
-                    src={meme.thumbnailUrl}
-                    alt={meme.name}
+                {meme.videoUrl ? (
+                  <video
+                    src={meme.videoUrl}
                     className="w-full h-full object-cover"
+                    controls
+                    playsInline
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
