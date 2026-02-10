@@ -21,96 +21,38 @@ import {
   ChartBarIcon,
   FolderIcon,
   UsersIcon,
-  CameraIcon,
-  FileTextIcon,
   Settings2Icon,
   CircleHelpIcon,
   SearchIcon,
-  DatabaseIcon,
   FileChartColumnIcon,
   FileIcon,
   CommandIcon,
+  ChessKnight,
+  ImageIcon,
+  MusicIcon,
 } from 'lucide-react';
 
 const data = {
   user: {
-    name: 'shadcn',
-    email: 'm@example.com',
+    name: 'selim',
+    email: 'a@monke.com',
     avatar: '/avatars/shadcn.jpg',
   },
   navMain: [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: <LayoutDashboardIcon />,
     },
     {
-      title: 'Lifecycle',
-      url: '#',
-      icon: <ListIcon />,
-    },
-    {
-      title: 'Analytics',
-      url: '#',
-      icon: <ChartBarIcon />,
-    },
-    {
       title: 'Projects',
-      url: '#',
+      url: '/dashboard/projects',
       icon: <FolderIcon />,
     },
     {
       title: 'Team',
       url: '#',
       icon: <UsersIcon />,
-    },
-  ],
-  navClouds: [
-    {
-      title: 'Capture',
-      icon: <CameraIcon />,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Proposal',
-      icon: <FileTextIcon />,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Prompts',
-      icon: <FileTextIcon />,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
     },
   ],
   navSecondary: [
@@ -132,19 +74,14 @@ const data = {
   ],
   documents: [
     {
-      name: 'Data Library',
-      url: '#',
-      icon: <DatabaseIcon />,
+      name: 'Videos',
+      url: '/dashboard/videos',
+      icon: <ImageIcon />,
     },
     {
-      name: 'Reports',
-      url: '#',
-      icon: <FileChartColumnIcon />,
-    },
-    {
-      name: 'Word Assistant',
-      url: '#',
-      icon: <FileIcon />,
+      name: 'Audios',
+      url: '/dashboard/audios',
+      icon: <MusicIcon />,
     },
   ],
 };
@@ -160,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="#">
-                <CommandIcon className="size-5!" />
+                <ChessKnight className="size-5!" />
                 <span className="text-base font-semibold">Monke Chess.</span>
               </a>
             </SidebarMenuButton>

@@ -6,6 +6,13 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Trash2, Upload, Volume2 } from 'lucide-react';
 import { useMediaStore } from '@/stores/mediaStore';
 import { toast } from 'sonner';
@@ -13,6 +20,7 @@ import { toast } from 'sonner';
 export function AudioLibrary() {
   const { transitionAudios, loadTransitionAudios, deleteTransitionAudio } = useMediaStore();
   const [uploading, setUploading] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     loadTransitionAudios();
@@ -24,7 +32,7 @@ export function AudioLibrary() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      
+
       const response = await fetch('/api/audio', {
         method: 'POST',
         body: formData,
@@ -36,6 +44,7 @@ export function AudioLibrary() {
 
       toast.success('Transition audio uploaded successfully');
       e.currentTarget.reset();
+      setUploadDialogOpen(false);
       await loadTransitionAudios();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to upload audio');
@@ -65,71 +74,89 @@ export function AudioLibrary() {
 
   return (
     <div className="space-y-6">
-      {/* Upload Form */}
-      <Card className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Upload New Transition Audio</h3>
-        <form onSubmit={handleUpload} className="space-y-4">
-          <div>
-            <Label htmlFor="audio">Audio File (MP3, WAV)</Label>
-            <Input
-              id="audio"
-              name="audio"
-              type="file"
-              accept="audio/mp3,audio/wav,audio/mpeg"
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Whoosh"
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="duration_ms">Duration (milliseconds)</Label>
-            <Input
-              id="duration_ms"
-              name="duration_ms"
-              type="number"
-              defaultValue={1000}
-              min={100}
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tags">Tags (comma-separated)</Label>
-            <Input
-              id="tags"
-              name="tags"
-              type="text"
-              placeholder="whoosh, movement, fast"
-              className="mt-1"
-            />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox id="is_default" name="is_default" value="true" />
-            <Label htmlFor="is_default" className="cursor-pointer">
-              Set as default transition audio
-            </Label>
-          </div>
-
-          <Button type="submit" disabled={uploading}>
+      <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+        <DialogTrigger asChild>
+          <Button>
             <Upload className="h-4 w-4 mr-2" />
-            {uploading ? 'Uploading...' : 'Upload Audio'}
+            Upload Transition Audio
           </Button>
-        </form>
-      </Card>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload New Transition Audio</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpload} className="space-y-4">
+            <div>
+              <Label htmlFor="audio">Audio File (MP3, WAV)</Label>
+              <Input
+                id="audio"
+                name="audio"
+                type="file"
+                accept="audio/mp3,audio/wav,audio/mpeg"
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Whoosh"
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="duration_ms">Duration (milliseconds)</Label>
+              <Input
+                id="duration_ms"
+                name="duration_ms"
+                type="number"
+                defaultValue={1000}
+                min={100}
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tags">Tags (comma-separated)</Label>
+              <Input
+                id="tags"
+                name="tags"
+                type="text"
+                placeholder="whoosh, movement, fast"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox id="is_default" name="is_default" value="true" />
+              <Label htmlFor="is_default" className="cursor-pointer">
+                Set as default transition audio
+              </Label>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setUploadDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={uploading}>
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Upload Audio'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Audio List */}
       <div>

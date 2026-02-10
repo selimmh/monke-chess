@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Trash2, Upload } from 'lucide-react';
 import { useMediaStore } from '@/stores/mediaStore';
 import { toast } from 'sonner';
@@ -12,6 +19,7 @@ import { toast } from 'sonner';
 export function MemeLibrary() {
   const { memes, loadMemes, deleteMeme } = useMediaStore();
   const [uploading, setUploading] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     loadMemes();
@@ -23,7 +31,7 @@ export function MemeLibrary() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      
+
       const response = await fetch('/api/memes', {
         method: 'POST',
         body: formData,
@@ -35,6 +43,7 @@ export function MemeLibrary() {
 
       toast.success('Meme uploaded successfully');
       e.currentTarget.reset();
+      setUploadDialogOpen(false);
       await loadMemes();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to upload meme');
@@ -64,64 +73,82 @@ export function MemeLibrary() {
 
   return (
     <div className="space-y-6">
-      {/* Upload Form */}
-      <Card className="p-4">
-        <h3 className="text-lg font-semibold mb-4">Upload New Meme</h3>
-        <form onSubmit={handleUpload} className="space-y-4">
-          <div>
-            <Label htmlFor="video">Video File (MP4, WebM)</Label>
-            <Input
-              id="video"
-              name="video"
-              type="file"
-              accept="video/mp4,video/webm"
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Shocked Cat"
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="duration_ms">Duration (milliseconds)</Label>
-            <Input
-              id="duration_ms"
-              name="duration_ms"
-              type="number"
-              defaultValue={3000}
-              min={100}
-              required
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tags">Tags (comma-separated)</Label>
-            <Input
-              id="tags"
-              name="tags"
-              type="text"
-              placeholder="shocked, surprised, funny"
-              className="mt-1"
-            />
-          </div>
-
-          <Button type="submit" disabled={uploading}>
+      <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+        <DialogTrigger asChild>
+          <Button>
             <Upload className="h-4 w-4 mr-2" />
-            {uploading ? 'Uploading...' : 'Upload Meme'}
+            Upload Meme
           </Button>
-        </form>
-      </Card>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upload New Meme</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpload} className="space-y-4">
+            <div>
+              <Label htmlFor="video">Video File (MP4, WebM)</Label>
+              <Input
+                id="video"
+                name="video"
+                type="file"
+                accept="video/mp4,video/webm"
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Shocked Cat"
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="duration_ms">Duration (milliseconds)</Label>
+              <Input
+                id="duration_ms"
+                name="duration_ms"
+                type="number"
+                defaultValue={3000}
+                min={100}
+                required
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tags">Tags (comma-separated)</Label>
+              <Input
+                id="tags"
+                name="tags"
+                type="text"
+                placeholder="shocked, surprised, funny"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setUploadDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={uploading}>
+                <Upload className="h-4 w-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Upload Meme'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Meme Grid */}
       <div>

@@ -148,7 +148,7 @@ export default function EditorPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/dashboard/projects')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
